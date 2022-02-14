@@ -91,6 +91,15 @@ jobs:
           ls -la $GITHUB_WORKSPACE/internal/n2n/build/Release
           ls -la $GITHUB_WORKSPACE/internal/n2n/include
 
+      - name: Configure
+        working-directory: internal/n2n
+        shell: bash
+        # Execute the build.  You can specify a specific target
+        # with "--target <NAME>"
+        run: |
+          ./autogen.sh
+          ./configure
+
       - name: run main
         shell: bash
         run: go run cmd/run/main.go
