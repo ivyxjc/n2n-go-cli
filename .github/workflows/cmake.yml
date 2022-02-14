@@ -3,6 +3,9 @@ name: CMake
 
 # yamllint disable-line rule:truthy
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 env:
@@ -10,28 +13,28 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-#  create-release:
-#    name: create-release
-#    runs-on: ubuntu-latest
-#    outputs:
-#      release_tag: ${{ steps.assemble_artifact.outputs.release_tag }}
-#    steps:
-#      - name: Assemble Artifact
-#        id: assemble_artifact
-#        env:
-#          TZ: Asia/Shanghai
-#        run: |
-#          time=$(date +%Y%m%d%H)
-#          release_tag="$time-${GITHUB_REF#refs/heads/}"
-#          echo "::set-output name=release_tag::$release_tag"
-  build:
+  #  create-release:
+  #    name: create-release
+  #    runs-on: ubuntu-latest
+  #    outputs:
+  #      release_tag: ${{ steps.assemble_artifact.outputs.release_tag }}
+  #    steps:
+  #      - name: Assemble Artifact
+  #        id: assemble_artifact
+  #        env:
+  #          TZ: Asia/Shanghai
+  #        run: |
+  #          time=$(date +%Y%m%d%H)
+  #          release_tag="$time-${GITHUB_REF#refs/heads/}"
+  #          echo "::set-output name=release_tag::$release_tag"
+  build-name:
     # The CMake configure and build commands are platform agnostic and should
     # work equally well on Windows or Mac.  You can convert this to a matrix
     # build if you need cross-platform coverage.
     # yamllint disable-line rule:line-length
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ${{ matrix.os }}
-#    needs: create-release
+    #    needs: create-release
     strategy:
       matrix:
         include:
@@ -82,10 +85,15 @@ jobs:
         # with "--target <NAME>"
         run: cmake --build . --config $BUILD_TYPE
 
+      - name: ls
+        shell: bash
+        run: |
+          ls -la ${{$GITHUB_WORKSPACE}}/internal/n2n/build/Release
+          ls -la ${{$GITHUB_WORKSPACE}}/internal/n2n/include
+
       - name: run main
         shell: bash
         run: go run cmd/run/main.go
-
 
       - name: Test
         working-directory: internal/n2n/build
@@ -95,10 +103,6 @@ jobs:
         # detail
         run: ctest -C $BUILD_TYPE
 
-      - name: ls
-        shell: bash
-        run: |
-          ls -la ${{github.workspace}}/internal/n2n/build/Release
 
 #      - name: Upload Edge exe
 #        uses: svenstaro/upload-release-action@v2
