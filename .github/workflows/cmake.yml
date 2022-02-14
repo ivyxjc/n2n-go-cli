@@ -82,6 +82,11 @@ jobs:
         # with "--target <NAME>"
         run: cmake --build . --config $BUILD_TYPE
 
+      - name: run main
+        shell: bash
+        run: go run cmd/run/main.go
+
+
       - name: Test
         working-directory: internal/n2n/build
         shell: bash
