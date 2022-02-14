@@ -88,8 +88,8 @@ jobs:
       - name: ls
         shell: bash
         run: |
-          ls -la ${{$GITHUB_WORKSPACE}}/internal/n2n/build/Release
-          ls -la ${{$GITHUB_WORKSPACE}}/internal/n2n/include
+          ls -la $GITHUB_WORKSPACE/internal/n2n/build/Release
+          ls -la $GITHUB_WORKSPACE/internal/n2n/include
 
       - name: run main
         shell: bash
